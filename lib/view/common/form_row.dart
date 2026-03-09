@@ -27,14 +27,14 @@ class FormRow extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     DefaultTextStyle(
-                      style: Theme.of(context).textTheme.bodyText2!.copyWith(fontSize: 17),
+                      style: Theme.of(context).textTheme.bodyMedium!.copyWith(fontSize: 17),
                       child: title,
                     ),
                     if (subtitle != null)
                       Padding(
                         padding: EdgeInsets.only(top: 2),
                         child: DefaultTextStyle(
-                          style: Theme.of(context).textTheme.caption!.copyWith(fontSize: 15),
+                          style: Theme.of(context).textTheme.bodySmall!.copyWith(fontSize: 15),
                           child: subtitle!,
                         ),
                       ),
@@ -43,7 +43,7 @@ class FormRow extends StatelessWidget {
               ),
               if (trailing != null)
                 DefaultTextStyle(
-                  style: Theme.of(context).textTheme.caption!.copyWith(fontSize: 16),
+                  style: Theme.of(context).textTheme.bodySmall!.copyWith(fontSize: 16),
                   child: IconTheme(
                     data: IconThemeData(color: Theme.of(context).disabledColor, size: 22),
                     child: trailing!,
@@ -78,7 +78,7 @@ class FormSection extends StatelessWidget {
               padding: EdgeInsets.fromLTRB(16, 0, 10, 4),
               constraints: BoxConstraints(minHeight: 36),
               child: DefaultTextStyle(
-                style: Theme.of(context).textTheme.caption!.copyWith(fontSize: 13),
+                style: Theme.of(context).textTheme.bodySmall!.copyWith(fontSize: 13),
                 child: header!,
               ),
             ),
@@ -101,7 +101,7 @@ class FormSection extends StatelessWidget {
               padding: EdgeInsets.fromLTRB(16, 4, 10, 0),
               constraints: BoxConstraints(minHeight: 36),
               child: DefaultTextStyle(
-                style: Theme.of(context).textTheme.caption!.copyWith(fontSize: 13),
+                style: Theme.of(context).textTheme.bodySmall!.copyWith(fontSize: 13),
                 child: footer!,
               ),
             ),

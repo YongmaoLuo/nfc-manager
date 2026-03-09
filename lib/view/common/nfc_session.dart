@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:app/utils/platform_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:nfc_manager/nfc_manager.dart';
 
@@ -8,6 +9,23 @@ Future<void> startSession({
   required Future<String?> Function(NfcTag) handleTag,
   String alertMessage = 'Hold your device near the item.',
 }) async {
+  // Check if NFC is available (not available on HarmonyOS yet)
+  if (PlatformUtils.isOHOS) {
+    return showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('NFC Not Available'),
+        content: Text('NFC functionality is not yet supported on HarmonyOS. Please check back later for updates.'),
+        actions: [
+          TextButton(
+            child: Text('GOT IT'),
+            onPressed: () => Navigator.pop(context),
+          ),
+        ],
+      ),
+    );
+  }
+
   if (!(await NfcManager.instance.isAvailable()))
     return showDialog(
       context: context,
