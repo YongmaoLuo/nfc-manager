@@ -6,9 +6,19 @@ import 'package:app/repository/repository_impl.dart';
 import 'package:app/repository/repository_impl_demo.dart';
 
 abstract class Repository {
-  static Future<Repository> createInstance({bool isDemo = false}) async => isDemo
-    ? RepositoryImplDemo()
-    : RepositoryImpl(await getOrCreateDatabase());
+  static Future<Repository> createInstance({bool isDemo = false}) async {
+    if (isDemo) {
+      return RepositoryImplDemo();
+    }
+
+    try {
+      final db = await getOrCreateDatabase();
+      return RepositoryImpl(db);
+    } catch (e) {
+      print('Failed to create database, falling back to demo mode: $e');
+      return RepositoryImplDemo();
+    }
+  }
 
   Stream<Iterable<WriteRecord>> subscribeWriteRecordList();
 
@@ -27,15 +37,13 @@ class SubscriptionManager {
       _controllers.remove(key)?.close();
       _subscribers.remove(key)?.close();
     });
-    void publisher(Future<T> future) => future
-      .then(controller.add)
-      .catchError(controller.addError);
+    void publisher(Future<T> future) =>
+        future.then(controller.add).catchError(controller.addError);
     _subscribers[key] = StreamController(onListen: () => publisher(fetcher()))
       ..stream.listen((_) => publisher(fetcher()));
     _controllers[key] = controller;
     return controller.stream;
   }
 
-  void publish() =>
-    _subscribers.values.forEach((e) => e.add(null));
+  void publish() => _subscribers.values.forEach((e) => e.add(null));
 }
