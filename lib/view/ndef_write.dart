@@ -188,7 +188,7 @@ class _WriteRecordFormRow extends StatelessWidget {
                   ),
                   title: Text(
                     '#$index ${info.title}',
-                    style: Theme.of(context).textTheme.caption!.copyWith(fontSize: 14),
+                    style: Theme.of(context).textTheme.bodySmall!.copyWith(fontSize: 14),
                   ),
                 ),
                 ListTile(

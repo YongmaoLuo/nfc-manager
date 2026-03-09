@@ -68,12 +68,12 @@ class _RecordColumn extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         DefaultTextStyle(
-          style: Theme.of(context).textTheme.bodyText1!.copyWith(fontSize: 16),
+          style: Theme.of(context).textTheme.bodyLarge!.copyWith(fontSize: 16),
           child: title,
         ),
         SizedBox(height: 2),
         DefaultTextStyle(
-          style: Theme.of(context).textTheme.bodyText2!.copyWith(fontSize: 15),
+          style: Theme.of(context).textTheme.bodyMedium!.copyWith(fontSize: 15),
           child: subtitle,
         ),
       ],
