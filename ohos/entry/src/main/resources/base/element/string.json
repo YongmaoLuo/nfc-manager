@@ -1,0 +1,16 @@
+{
+  "string": [
+    {
+      "name": "module_desc",
+      "value": "NFC Manager module"
+    },
+    {
+      "name": "EntryAbility_desc",
+      "value": "NFC Manager Application"
+    },
+    {
+      "name": "EntryAbility_label",
+      "value": "NFC Manager"
+    }
+  ]
+}

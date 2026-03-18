@@ -8,9 +8,9 @@ import 'package:app/view/edit_mime.dart';
 import 'package:app/view/edit_text.dart';
 import 'package:app/view/edit_uri.dart';
 import 'package:app/view/ndef_record.dart';
+import 'package:app/nfc_manager_stub.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:nfc_manager/nfc_manager.dart';
 import 'package:provider/provider.dart';
 
 class NdefWriteModel with ChangeNotifier {
@@ -32,7 +32,7 @@ class NdefWriteModel with ChangeNotifier {
     if (tech == null)
       throw('Tag is not ndef.');
 
-    if (!tech.isWritable)
+    if (!(tech.isWritable ?? false))
       throw('Tag is not ndef writable.');
 
     try {
@@ -188,7 +188,7 @@ class _WriteRecordFormRow extends StatelessWidget {
                   ),
                   title: Text(
                     '#$index ${info.title}',
-                    style: Theme.of(context).textTheme.caption!.copyWith(fontSize: 14),
+                    style: Theme.of(context).textTheme.bodySmall!.copyWith(fontSize: 14),
                   ),
                 ),
                 ListTile(

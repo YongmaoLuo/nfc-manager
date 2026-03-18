@@ -1,7 +1,7 @@
 import 'package:app/model/record.dart';
 import 'package:app/utility/extensions.dart';
+import 'package:app/nfc_manager_stub.dart';
 import 'package:flutter/material.dart';
-import 'package:nfc_manager/nfc_manager.dart';
 
 class NdefRecordPage extends StatelessWidget {
   NdefRecordPage(this.index, this.record);
@@ -68,12 +68,12 @@ class _RecordColumn extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         DefaultTextStyle(
-          style: Theme.of(context).textTheme.bodyText1!.copyWith(fontSize: 16),
+          style: Theme.of(context).textTheme.titleMedium!.copyWith(fontSize: 16),
           child: title,
         ),
         SizedBox(height: 2),
         DefaultTextStyle(
-          style: Theme.of(context).textTheme.bodyText2!.copyWith(fontSize: 15),
+          style: Theme.of(context).textTheme.bodyMedium!.copyWith(fontSize: 15),
           child: subtitle,
         ),
       ],

@@ -5,9 +5,8 @@ import 'package:app/utility/extensions.dart';
 import 'package:app/view/common/form_row.dart';
 import 'package:app/view/common/nfc_session.dart';
 import 'package:app/view/ndef_record.dart';
+import 'package:app/nfc_manager_stub.dart';
 import 'package:flutter/material.dart';
-import 'package:nfc_manager/nfc_manager.dart';
-import 'package:nfc_manager/platform_tags.dart';
 import 'package:provider/provider.dart';
 
 class TagReadModel with ChangeNotifier {
@@ -113,7 +112,7 @@ class _TagInfo extends StatelessWidget {
       if (tech is NfcA) {
         tagWidgets.add(FormRow(
           title: Text('NfcA - Atqa'),
-          subtitle: Text('${tech.atqa.toHexString()}'),
+          subtitle: Text(tech.atqa.toHexString()),
         ));
         tagWidgets.add(FormRow(
           title: Text('NfcA - Sak'),
@@ -177,11 +176,11 @@ class _TagInfo extends StatelessWidget {
       if (tech is NfcB) {
         tagWidgets.add(FormRow(
           title: Text('NfcB - Application Data'),
-          subtitle: Text('${tech.applicationData.toHexString()}'),
+          subtitle: Text(tech.applicationData.toHexString()),
         ));
         tagWidgets.add(FormRow(
           title: Text('NfcB - Protocol Info'),
-          subtitle: Text('${tech.protocolInfo.toHexString()}'),
+          subtitle: Text(tech.protocolInfo.toHexString()),
         ));
         tagWidgets.add(FormRow(
           title: Text('NfcB - Max Transceive Length'),
@@ -193,11 +192,11 @@ class _TagInfo extends StatelessWidget {
       if (tech is NfcF) {
         tagWidgets.add(FormRow(
           title: Text('NfcF - System Code'),
-          subtitle: Text('${tech.systemCode.toHexString()}'),
+          subtitle: Text(tech.systemCode.toHexString()),
         ));
         tagWidgets.add(FormRow(
           title: Text('NfcF - Manufacturer'),
-          subtitle: Text('${tech.manufacturer.toHexString()}'),
+          subtitle: Text(tech.manufacturer.toHexString()),
         ));
         tagWidgets.add(FormRow(
           title: Text('NfcF - Max Transceive Length'),
@@ -229,11 +228,11 @@ class _TagInfo extends StatelessWidget {
       if (tech is IsoDep) {
         tagWidgets.add(FormRow(
           title: Text('IsoDep - Hi Layer Response'),
-          subtitle: Text('${tech.hiLayerResponse?.toHexString() ?? '-'}'),
+          subtitle: Text(tech.hiLayerResponse.toHexString()),
         ));
         tagWidgets.add(FormRow(
           title: Text('IsoDep - Historical Bytes'),
-          subtitle: Text('${tech.historicalBytes?.toHexString() ?? '-'}'),
+          subtitle: Text(tech.historicalBytes.toHexString()),
         ));
         tagWidgets.add(FormRow(
           title: Text('IsoDep - Extended Length Apdu Supported'),
@@ -260,16 +259,16 @@ class _TagInfo extends StatelessWidget {
         ));
         tagWidgets.add(FormRow(
           title: Text('Current IDm'),
-          subtitle: Text('${tech.currentIDm.toHexString()}'),
+          subtitle: Text(tech.currentIDm.toHexString()),
         ));
         tagWidgets.add(FormRow(
           title: Text('Current System Code'),
-          subtitle: Text('${tech.currentSystemCode.toHexString()}'),
+          subtitle: Text(tech.currentSystemCode.toHexString()),
         ));
         if (manufacturerParameter != null)
           tagWidgets.add(FormRow(
             title: Text('Manufacturer Parameter'),
-            subtitle: Text('${manufacturerParameter.toHexString()}'),
+            subtitle: Text(manufacturerParameter.toHexString()),
           ));
       }
 
@@ -281,11 +280,11 @@ class _TagInfo extends StatelessWidget {
         ));
         tagWidgets.add(FormRow(
           title: Text('Identifier'),
-          subtitle: Text('${tech.identifier.toHexString()}'),
+          subtitle: Text(tech.identifier.toHexString()),
         ));
         tagWidgets.add(FormRow(
           title: Text('IC Serial Number'),
-          subtitle: Text('${tech.icSerialNumber.toHexString()}'),
+          subtitle: Text(tech.icSerialNumber.toHexString()),
         ));
         tagWidgets.add(FormRow(
           title: Text('IC Manufacturer Code'),
@@ -301,19 +300,19 @@ class _TagInfo extends StatelessWidget {
         ));
         tagWidgets.add(FormRow(
           title: Text('Identifier'),
-          subtitle: Text('${tech.identifier.toHexString()}'),
+          subtitle: Text(tech.identifier.toHexString()),
         ));
         tagWidgets.add(FormRow(
           title: Text('Initial Selected AID'),
-          subtitle: Text('${tech.initialSelectedAID}'),
+          subtitle: Text(tech.initialSelectedAID),
         ));
         tagWidgets.add(FormRow(
           title: Text('Application Data'),
-          subtitle: Text('${tech.applicationData?.toHexString() ?? '-'}'),
+          subtitle: Text(tech.applicationData.toHexString()),
         ));
         tagWidgets.add(FormRow(
           title: Text('Historical Bytes'),
-          subtitle: Text('${tech.historicalBytes?.toHexString() ?? '-'}'),
+          subtitle: Text(tech.historicalBytes.toHexString()),
         ));
         tagWidgets.add(FormRow(
           title: Text('Proprietary Application Data Coding'),
@@ -329,11 +328,11 @@ class _TagInfo extends StatelessWidget {
         ));
         tagWidgets.add(FormRow(
           title: Text('Identifier'),
-          subtitle: Text('${tech.identifier.toHexString()}'),
+          subtitle: Text(tech.identifier.toHexString()),
         ));
         tagWidgets.add(FormRow(
           title: Text('Historical Bytes'),
-          subtitle: Text('${tech.historicalBytes?.toHexString() ?? '-'}'),
+          subtitle: Text(tech.historicalBytes.toHexString()),
         ));
       }
     }

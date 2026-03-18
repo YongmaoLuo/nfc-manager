@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:nfc_manager/nfc_manager.dart';
+import 'package:app/nfc_manager_stub.dart';
 
 Future<void> startSession({
   required BuildContext context,
@@ -14,7 +14,7 @@ Future<void> startSession({
       builder: (context) => _UnavailableDialog(),
     );
 
-  if (Platform.isAndroid)
+  if (Platform.isAndroid || Platform.operatingSystem == 'ohos')
     return showDialog(
       context: context,
       builder: (context) => _AndroidSessionDialog(alertMessage, handleTag),

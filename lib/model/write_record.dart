@@ -1,4 +1,4 @@
-import 'package:nfc_manager/nfc_manager.dart';
+import 'package:app/nfc_manager_stub.dart';
 
 class WriteRecord {
   WriteRecord({required this.id, required this.record});

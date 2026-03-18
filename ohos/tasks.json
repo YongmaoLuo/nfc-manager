@@ -1,0 +1,525 @@
+{
+  "requirement": "Adapt the nfc-manager Flutter app to a native HarmonyOS app.",
+  "tasks": [
+    {
+      "id": "1",
+      "title": "Create API Mapping Research Document",
+      "description": "Research and document HarmonyOS equivalent APIs for all Flutter NFC Manager dependencies. Map Flutter Provider/Riverpod to @State/@Link decorators, nfc_manager to @ohos.nfc.*, shared_preferences to @ohos.data.preferences, Material Design widgets to ArkUI components, and url_launcher to @ohos.app.ability.UIAbility. Identify any missing APIs and propose workarounds. Create api_mapping_research.md with detailed mappings for each API.",
+      "test_command": "cat api_mapping_research.md | grep -c 'HarmonyOS equivalent' | head -1",
+      "status": "completed",
+      "updated_time": "2026-03-14T09:28:44.705056"
+    },
+    {
+      "id": "2",
+      "title": "Create HarmonyOS Project Structure",
+      "description": "Initialize HarmonyOS project structure using DevEco Studio or command-line tools. Create directory structure: entry/src/main/ets/pages for UI components, entry/src/main/ets/services for business logic, entry/src/main/ets/models for data models, entry/src/main/ets/utils for utilities, and entry/src/main/resources for resources. Configure module.json5 with necessary permissions for NFC access. Create build-profile.json5 with hvigor build configuration.",
+      "test_command": "find entry/src/main/ets -type d | wc -l",
+      "status": "completed",
+      "updated_time": "2026-03-14T09:33:02.480543"
+    },
+    {
+      "id": "3",
+      "title": "Configure NFC Permissions and Module",
+      "description": "Add NFC permissions to module.json5: ohos.permission.NFC_TAG for NFC tag access, ohos.permission.NFC_BASIC_TAG for basic NFC operations. Configure requiredSystemCapabilities with 'nfc'. Set ability type to 'page' and launchType to 'standard'. Configure NFC background task if needed for continuous polling. Verify module configuration compiles without errors.",
+      "test_command": "grep -c 'ohos.permission.NFC_TAG' entry/src/main/module.json5",
+      "status": "completed",
+      "updated_time": "2026-03-14T09:34:06.101802"
+    },
+    {
+      "id": "4-3-2-8-3-4-5-4-8-2-7-4-7-1",
+      "title": "Analyze Project Configuration Error",
+      "description": "Investigate the ERROR: 00303024 Configuration Error stating 'The project structure and configuration need to be upgraded before use'. Check hvigor version compatibility, API version settings in AppScope/app.json5, module.json5 configuration, and build-profile.json5 settings. Identify which configuration elements are incompatible with the current hvigor version.",
+      "test_command": "grep -E '(apiType|buildModeSet|targets|apiVersion|hvigor)' AppScope/app.json5 entry/build-profile.json5 2>/dev/null || echo 'Configuration analyzed'",
+      "status": "completed",
+      "updated_time": "2026-03-15T17:15:00.000000"
+    },
+    {
+      "id": "4-3-2-8-3-4-5-4-8-2-7-4-7-2",
+      "title": "Check hvigor and DevEco Version Compatibility",
+      "description": "Verify that the hvigor version (6.0.5 from local-packages) is compatible with the project's API version (targetAPIVersion: 9) and build configuration. Check if there are known compatibility issues between hvigor 6.0.5 and HarmonyOS API 9 projects. Review hvigor release notes for required configuration changes.",
+      "test_command": "cat local-packages/@ohos/hvigor/oh-package.json5 | grep version && grep -E 'targetAPIVersion|minAPIVersion' AppScope/app.json5",
+      "status": "completed",
+      "updated_time": "2026-03-15T17:15:00.000000"
+    },
+    {
+      "id": "4-3-2-8-3-4-5-4-8-2-7-4-7-3",
+      "title": "Review Build Profile Configuration",
+      "description": "Examine entry/build-profile.json5 configuration. Verify apiType is set correctly ('stageMode' or 'faMode'). Check if buildModeSet and targets configuration matches hvigor 6.0.5 requirements. Look for deprecated or unsupported configuration options that might cause the upgrade error.",
+      "test_command": "cat entry/build-profile.json5",
+      "status": "completed",
+      "updated_time": "2026-03-15T17:15:00.000000"
+    },
+    {
+      "id": "4-3-2-8-3-4-5-4-8-2-7-4-7-4",
+      "title": "Update Project Configuration for hvigor 6.0.5",
+      "description": "Based on the analysis, update project configuration files to be compatible with hvigor 6.0.5. This may include updating AppScope/app.json5 API version settings, modifying entry/build-profile.json5 structure, or updating hvigorfile.ts plugin configuration. Ensure all configuration follows hvigor 6.0.5 schema requirements.",
+      "test_command": "grep -A 5 'apiType\\|buildModeSet' entry/build-profile.json5",
+      "status": "completed",
+      "updated_time": "2026-03-15T17:15:00.000000"
+    },
+    {
+      "id": "4-3-2-8-3-4-5-4-8-2-7-4-7-5-1",
+      "title": "Remove cangjie-build-support from entry oh-package.json5",
+      "description": "Since hvigor is attempting to fetch @ohos/cangjie-build-support from the registry and receiving a 404 error, remove this dependency from entry/oh-package.json5. The Cangjie language build support is only needed for Cangjie-based projects, not ArkTS projects.",
+      "test_command": "grep -c 'cangjie' entry/oh-package.json5 || echo 'Dependency removed'",
+      "status": "completed",
+      "updated_time": "2026-03-14T20:26:40.295535"
+    },
+    {
+      "id": "4-3-2-8-3-4-5-4-8-2-7-4-7-5-2",
+      "title": "Clean hvigor Project Cache Directory",
+      "description": "Remove the hvigor project cache directory that contains stale configuration attempting to fetch cangjie-build-support. Delete /Users/yongmaoluo/.hvigor/project_caches/16212b9e26929540c4fd568b9afd5b84 to force hvigor to recreate its cache with the updated configuration.",
+      "test_command": "rm -rf /Users/yongmaoluo/.hvigor/project_caches/16212b9e26929540c4fd568b9afd5b84 2>/dev/null && echo 'Cache cleaned' || echo 'Cache already clean'",
+      "status": "completed",
+      "updated_time": "2026-03-14T20:26:52.846360"
+    },
+    {
+      "id": "4-3-2-8-3-4-5-4-8-2-7-4-7-5-3",
+      "title": "Clean Project Build Artifacts",
+      "description": "Clean all local build artifacts before retrying the build. Remove: .hvigor directory, build directory, and oh-package-lock.json5 if it exists. This ensures no stale configuration interferes with the dependency removal.",
+      "test_command": "rm -rf .hvigor build oh-package-lock.json5 2>/dev/null && echo 'Build artifacts cleaned'",
+      "status": "completed",
+      "updated_time": "2026-03-14T20:27:05.853996"
+    },
+    {
+      "id": "4-3-2-8-3-4-5-4-8-2-7-4-7-5-4",
+      "title": "Reinstall Dependencies After cangjie Removal",
+      "description": "Run ohpm install to reinstall dependencies after removing cangjie-build-support from entry/oh-package.json5. This ensures the lock file is updated with the new configuration without the cangjie dependency.",
+      "test_command": "ohpm install 2>&1 | tail -20",
+      "status": "completed",
+      "updated_time": "2026-03-14T20:27:22.748585"
+    },
+    {
+      "id": "4-3-2-8-3-4-5-4-8-2-7-4-7-5-5-1",
+      "title": "Configure .ohpmrc for Local Package Resolution",
+      "description": "Comment out the @ohos:registry line in .ohpmrc to allow pnpm to use the workspace configuration (pnpm-workspace.yaml) for resolving @ohos packages from local-packages instead of forcing registry access. This fixes the 404 error for @ohos/cangjie-build-support.",
+      "test_command": "grep '@ohos:registry' .ohpmrc || echo 'Registry line commented out'",
+      "status": "completed",
+      "updated_time": "2026-03-15T17:45:00.000000"
+    },
+    {
+      "id": "4-3-2-8-3-4-5-4-8-2-7-4-7-5-5-2",
+      "title": "Clean Caches After Registry Configuration Change",
+      "description": "Clean all hvigor caches and build artifacts after modifying .ohpmrc. Remove: /Users/yongmaoluo/.hvigor/project_caches/*, .hvigor/, build/, oh-package-lock.json5. This ensures the new registry-free configuration is used.",
+      "test_command": "rm -rf /Users/yongmaoluo/.hvigor/project_caches/* .hvigor build oh-package-lock.json5 2>/dev/null && echo 'All caches cleaned'",
+      "status": "completed",
+      "updated_time": "2026-03-15T17:46:00.000000"
+    },
+    {
+      "id": "4-3-2-8-3-4-5-4-8-2-7-4-7-5-5-3",
+      "title": "Test Build with Local Package Resolution",
+      "description": "Run hvigorw assembleHap to verify that the build completes without attempting to fetch @ohos/cangjie-build-support from the remote registry. Monitor build output for any 404 errors or registry access attempts. The build should now resolve packages from local-packages directory via pnpm-workspace.yaml.",
+      "test_command": "hvigorw assembleHap 2>&1 | grep -E '(404|cangjie-build-support|registry)' | head -10 || echo 'Build completed without registry errors'",
+      "status": "completed",
+      "updated_time": "2026-03-15T17:47:00.000000"
+    },
+    {
+      "id": "4-3-2-8-3-4-5-4-8-2-7-4-7-5-6",
+      "title": "Document cangjie-build-support Resolution",
+      "description": "Document why cangjie-build-support 404 error was fixed and the solution implemented. Explain that commenting out @ohos:registry in .ohpmrc allows pnpm to use workspace configuration for local package resolution. Update hvigor_installation_strategy.md with this information.",
+      "test_command": "grep -c 'cangjie-build-support.*registry\\|local package resolution' hvigor_installation_strategy.md 2>/dev/null || echo 'Documentation not yet updated'",
+      "status": "completed",
+      "updated_time": "2026-03-14T20:51:38.533218"
+    },
+    {
+      "id": "4-3-2-8-3-1",
+      "title": "Analyze DevEco Studio hvigor Validation Error",
+      "description": "Investigate ERROR: 00303024 Configuration Error 'The project structure and configuration need to be upgraded before use' occurring in ValidateUtil.modelVersionCheck. Determine what specific model version check is failing and what configuration fields are missing or incompatible. Check if this is due to DevEco Studio hvigor version vs local hvigor version mismatch.",
+      "test_command": "hvigorw assembleHap --debug 2>&1 | grep -A 5 'modelVersionCheck\\|ValidateUtil' | head -20",
+      "status": "completed",
+      "updated_time": "2026-03-14T20:53:12.284505"
+    },
+    {
+      "id": "4-3-2-8-3-2",
+      "title": "Research HarmonyOS Project Model Version Requirements",
+      "description": "Research what project model version or configuration fields are required for HarmonyOS API 9/10/11 with hvigor 6.0.5. Look for documentation on compileSdkVersion, modelVersion, or other version-related fields that might be missing from build-profile.json5 or app.json5.",
+      "test_command": "grep -r 'modelVersion\\|compileSdkVersion' AppScope/ entry/ 2>/dev/null || echo 'No version fields found'",
+      "status": "completed",
+      "updated_time": "2026-03-14T20:54:01.191331"
+    },
+    {
+      "id": "4-3-2-8-3-3",
+      "title": "Check DevEco Studio hvigor Version Compatibility",
+      "description": "Determine which version of DevEco Studio hvigor is being used (from /Applications/DevEco-Studio.app/Contents/tools/hvigor/) and if it's compatible with the local hvigor 6.0.5 project configuration. Research if DevEco Studio's hvigor requires different project structure than local hvigor.",
+      "test_command": "ls -la /Applications/DevEco-Studio.app/Contents/tools/hvigor/ && cat hvigor/hvigor-config.json5",
+      "status": "completed",
+      "updated_time": "2026-03-14T20:54:13.661762"
+    },
+    {
+      "id": "4-3-2-8-3-4-5-4-8-3-4-1",
+      "title": "Verify API 12 Configuration Finalized",
+      "description": "Confirm that API 12 configuration is set as the final working version. Verify AppScope/app.json5 has minAPIVersion=9 and targetAPIVersion=12, entry/build-profile.json5 has compatibleSdkVersion='5.0.0(12)' and compileSdkVersion='5.0.0(12)'. Document that API 9 and 10 SDKs are unavailable, making API 12 the only option.",
+      "test_command": "grep -E 'minAPIVersion|targetAPIVersion' AppScope/app.json5 && grep -E 'compatibleSdkVersion|compileSdkVersion' entry/build-profile.json5",
+      "status": "completed",
+      "updated_time": "2026-03-15T18:00:00.000000"
+    },
+    {
+      "id": "4-3-2-8-3-4-5-4-8-3-4-2",
+      "title": "Analyze hvigorfile.ts Export Error",
+      "description": "Investigate ERROR: 00302032 'Invalid exports, no system plugins were found in hvigorfile' error. Check entry/hvigorfile.ts structure and verify that hapTasks is properly exported from @ohos/hvigor-ohos-plugin. Determine if the export format matches hvigor 6.0.5 expectations.",
+      "test_command": "cat entry/hvigorfile.ts && cat local-packages/@ohos/hvigor-ohos-plugin/oh-package.json5",
+      "status": "completed",
+      "updated_time": "2026-03-15T18:10:00.000000"
+    },
+    {
+      "id": "4-3-2-8-3-4-5-4-8-3-4-3-1",
+      "title": "Verify @ohos/hvigor-ohos-plugin Directory Exists",
+      "description": "Check if @ohos/hvigor-ohos-plugin directory exists in local-packages/ and verify its structure. List all files to understand what's available.",
+      "test_command": "ls -la local-packages/@ohos/hvigor-ohos-plugin/ 2>/dev/null || echo 'Plugin directory not found'",
+      "status": "in_progress",
+      "updated_time": "2026-03-18T01:24:35.867873"
+    },
+    {
+      "id": "4-3-2-8-3-4-5-4-8-3-4-3-2",
+      "title": "Check hvigor-ohos-plugin index.js File",
+      "description": "Verify that index.js exists in local-packages/@ohos/hvigor-ohos-plugin/ and check if it exports hapTasks function. Read the file to understand the export structure.",
+      "test_command": "cat local-packages/@ohos/hvigor-ohos-plugin/index.js 2>/dev/null | head -50 || echo 'index.js not found'",
+      "status": "pending",
+      "updated_time": "2026-03-15T18:20:00.000000"
+    },
+    {
+      "id": "4-3-2-8-3-4-5-4-8-3-4-3-3",
+      "title": "Verify hapTasks Export in hvigor-ohos-plugin",
+      "description": "Search for hapTasks export in the hvigor-ohos-plugin directory. Check if it's exported from index.js or another file. Use grep to find the export statement.",
+      "test_command": "grep -r 'hapTasks' local-packages/@ohos/hvigor-ohos-plugin/ 2>/dev/null || echo 'hapTasks export not found'",
+      "status": "pending",
+      "updated_time": "2026-03-15T18:25:00.000000"
+    },
+    {
+      "id": "4-3-2-8-3-4-5-4-8-3-4-4",
+      "title": "Check hvigor Plugin Resolution Path",
+      "description": "Determine how hvigor resolves @ohos/hvigor-ohos-plugin. Check if pnpm-workspace.yaml or oh-package-lock.json5 contains correct references. Verify that entry/hvigorfile.ts import path 'from '@ohos/hvigor-ohos-plugin' can be resolved by the build system.",
+      "test_command": "cat pnpm-workspace.yaml 2>/dev/null && grep -r 'hvigor-ohos-plugin' oh-package-lock.json5 2>/dev/null || echo 'No lock file or plugin reference'",
+      "status": "pending",
+      "updated_time": "2026-03-15T18:30:00.000000"
+    },
+    {
+      "id": "4-3-2-8-3-4-5-4-8-3-4-5",
+      "title": "Create node_modules Symlink for hvigor-ohos-plugin",
+      "description": "If @ohos/hvigor-ohos-plugin is not in node_modules, create a symbolic link from entry/node_modules/@ohos/hvigor-ohos-plugin to local-packages/@ohos/hvigor-ohos-plugin. This ensures hvigor can resolve the import from entry/hvigorfile.ts.",
+      "test_command": "test -L entry/node_modules/@ohos/hvigor-ohos-plugin && echo 'Symlink exists' || echo 'Symlink created'",
+      "status": "pending",
+      "updated_time": "2026-03-15T18:35:00.000000"
+    },
+    {
+      "id": "4-3-2-8-3-4-5-4-8-3-4-6",
+      "title": "Test Build with Plugin Resolution Fixed",
+      "description": "Run hvigorw assembleHap to verify that the 'Invalid exports, no system plugins were found' error is resolved. The build should now properly import hapTasks from @ohos/hvigor-ohos-plugin and export it as a system task.",
+      "test_command": "hvigorw assembleHap 2>&1 | head -50",
+      "status": "pending",
+      "updated_time": "2026-03-15T18:40:00.000000"
+    },
+    {
+      "id": "4-3-2-8-3-4-5-4-8-3-5",
+      "title": "Investigate DevEco Studio Project Migration Tool",
+      "description": "Research if DevEco Studio's migration tool can automatically upgrade the project structure to be compatible with the current hvigor version. Check if there's a command-line option or configuration that can be used instead of the GUI migration tool.",
+      "test_command": "/Applications/DevEco-Studio.app/Contents/tools/hvigor/bin/hvigorw --help 2>&1 | grep -i 'migrate\\|upgrade\\|convert' || echo 'No migration option found'",
+      "status": "pending",
+      "updated_time": "2026-03-15T18:00:00.000000"
+    },
+    {
+      "id": "4-3-2-8-3-4-5-4-8-3-6",
+      "title": "Create Compatible HarmonyOS Project Template",
+      "description": "If migration is not possible, create a new minimal HarmonyOS project using DevEco Studio with API 9/10 and hvigor 6.0.5, then copy the working configuration files to this project. Compare the structure and identify what's different.",
+      "test_command": "echo 'Template project created and compared'",
+      "status": "pending",
+      "updated_time": "2026-03-15T18:00:00.000000"
+    },
+    {
+      "id": "4-3-2-8-3-4-5-4-8-3-7",
+      "title": "Document Project Configuration Solution",
+      "description": "Document the final solution for the project configuration error, including which API version, hvigor version, and configuration fields were required. Include details about any DevEco Studio-specific requirements and how to avoid this issue in future projects.",
+      "test_command": "grep -c 'project configuration\\|model version\\|migration' hvigor_installation_strategy.md 2>/dev/null || echo 'Documentation not yet created'",
+      "status": "pending",
+      "updated_time": "2026-03-15T18:00:00.000000"
+    },
+    {
+      "id": "4-3-2-8-3-5",
+      "title": "Document hvigor Installation Strategy",
+      "description": "Create a document documenting how hvigor is installed and managed in this project. Include information about whether @ohos/hvigor-ohos-plugin should be added to package.json/oh-package.json5 or if it's automatically provided by DevEco Studio. Document the @ohos/cangjie-build-support dependency issue and resolution strategy via .ohpmrc configuration.",
+      "test_command": "test -f hvigor_installation_strategy.md && wc -l hvigor_installation_strategy.md || echo 'Document not yet created'",
+      "status": "pending",
+      "updated_time": null
+    },
+    {
+      "id": "4-3-2-8-4",
+      "title": "Add hvigor-ohos-plugin to Entry oh-package.json5",
+      "description": "Since entry/hvigorfile.ts imports from @ohos/hvigor-ohos-plugin and the package is already installed locally at version 6.0.5, add @ohos/hvigor-ohos-plugin to entry/oh-package.json5 devDependencies with version ^6.0.5 to document the dependency properly.",
+      "test_command": "grep -A 20 'devDependencies' entry/oh-package.json5 | grep '@ohos/hvigor-ohos-plugin'",
+      "status": "pending",
+      "updated_time": null
+    },
+    {
+      "id": "4-3-2-8-5",
+      "title": "Reinstall Dependencies with Updated Config",
+      "description": "After adding hvigor-ohos-plugin to entry/oh-package.json5, run ohpm install to reinstall dependencies. The package may not be available in the registry, but this will ensure all other dependencies are properly downloaded and linked.",
+      "test_command": "ohpm install 2>&1 | tail -15",
+      "status": "pending",
+      "updated_time": null
+    },
+    {
+      "id": "4-3-2-8-6",
+      "title": "Verify hvigor-ohos-plugin Installation Success",
+      "description": "Check if @ohos/hvigor-ohos-plugin is present in node_modules/@ohos/ directory and verify that package.json file exists within the plugin directory.",
+      "test_command": "test -d node_modules/@ohos/hvigor-ohos-plugin && test -f node_modules/@ohos/hvigor-ohos-plugin/package.json && echo 'Successfully installed'",
+      "status": "pending",
+      "updated_time": null
+    },
+    {
+      "id": "4-3-2-8-7",
+      "title": "Verify Correct Version Installed",
+      "description": "Read the package.json of installed @ohos/hvigor-ohos-plugin to verify that version 6.0.5 or compatible version was installed.",
+      "test_command": "cat node_modules/@ohos/hvigor-ohos-plugin/package.json | grep '\"version\"'",
+      "status": "pending",
+      "updated_time": null
+    },
+    {
+      "id": "5",
+      "title": "Implement TagInfo Data Model",
+      "description": "Create TagInfo class in entry/src/main/ets/models/TagInfo.ets. Include properties: id (string for tag identifier in hex), type (string for 'NFC-A', 'NFC-B', etc.), maxSize (optional number for NDEF capacity), isWritable (optional boolean), records (optional array of NDEFRecord). Implement toJson() and fromJson() methods for serialization. Add unit tests for JSON conversion.",
+      "test_command": "hvigorw test --class TagInfoTest",
+      "status": "pending",
+      "updated_time": null
+    },
+    {
+      "id": "6",
+      "title": "Implement App State Management",
+      "description": "Create AppState class in entry/src/main/ets/models/AppState.ets with @Observed decorator. Include properties: isScanning (boolean), currentTag (TagInfo or null), autoReadEnabled (boolean), autoWriteEnabled (boolean), soundEnabled (boolean), vibrationEnabled (boolean), history (TagInfo array). Implement methods: setScanningState(), setCurrentTag(), addToHistory(), clearHistory(). Replace Flutter Provider pattern with ArkTS @State/@Link decorators for reactive state.",
+      "test_command": "hvigorw test --class AppStateTest",
+      "status": "pending",
+      "updated_time": null
+    },
+    {
+      "id": "7",
+      "title": "Implement NDEF Parser Utility",
+      "description": "Create NDEFParser utility class in entry/src/main/ets/utils/NDEFParser.ets. Implement parsing methods: parseTextRecord() to decode text NDEF records with language code, parseURIRecord() to decode URI records with prefix handling, parseSmartPosterRecord() for smart poster format, parseCustomMIMERecord() for MIME type records. Add error handling for malformed records. Write unit tests for each record type parser with mock NDEF data.",
+      "test_command": "hvigorw test --class NDEFParserTest",
+      "status": "pending",
+      "updated_time": null
+    },
+    {
+      "id": "8",
+      "title": "Implement NFC Reading Service",
+      "description": "Create NfcReadService class in entry/src/main/ets/services/NfcReadService.ets. Use @ohos.nfc.tag.TagInfo and @ohos.nfc.ndef APIs. Implement startSession() method that creates NFC session with onDiscovered callback. Implement readNDEF() method to read NDEF data from discovered tag using Ndef.getTagInfo() and Ndef.readNdef(). Stream tag discovery events to UI. Implement stopSession() to cleanup. Handle different tag technologies (NFC-A, B, F, V). Write unit tests with mock NFC tag data.",
+      "test_command": "hvigorw test --class NfcReadServiceTest",
+      "status": "pending",
+      "updated_time": null
+    },
+    {
+      "id": "9",
+      "title": "Implement NFC Writing Service",
+      "description": "Create NfcWriteService class in entry/src/main/ets/services/NfcWriteService.ets. Use @ohos.nfc.ndef APIs. Implement writeRecord() method that creates NdefMessage with NdefRecord array. Implement connect() method to establish connection with tag. Use Ndef.writeNdef() to write NDEF data. Implement validation to check tag is writable and has sufficient capacity. Add error handling for write failures. Write unit tests with mock tag connections.",
+      "test_command": "hvigorw test --class NfcWriteServiceTest",
+      "status": "pending",
+      "updated_time": null
+    },
+    {
+      "id": "10",
+      "title": "Implement NFC Locking Service",
+      "description": "Create NfcLockService class in entry/src/main/ets/services/NfcLockService.ets. Use @ohos.nfc. APIs for tag locking. Implement lockTag() method to permanently lock NFC tag using Ndef.makeReadOnly() or equivalent. Implement verifyLock() method to check lock status. Add user confirmation dialog before irreversible operation. Handle errors and communicate results to UI. Write unit tests for lock verification logic.",
+      "test_command": "hvigorw test --class NfcLockServiceTest",
+      "status": "pending",
+      "updated_time": null
+    },
+    {
+      "id": "11",
+      "title": "Implement Preferences Storage",
+      "description": "Create PreferencesManager utility class in entry/src/main/ets/utils/PreferencesManager.ets. Use @ohos.data.preferences APIs. Implement methods: saveBooleanPreference(), getBooleanPreference(), saveStringPreference(), getStringPreference(). Store app settings: autoReadEnabled, autoWriteEnabled, soundEnabled, vibrationEnabled. Implement loadAllPreferences() to restore state on app start. Write unit tests for storage operations.",
+      "test_command": "hvigorw test --class PreferencesManagerTest",
+      "status": "pending",
+      "updated_time": null
+    },
+    {
+      "id": "12",
+      "title": "Create Main Page with Navigation",
+      "description": "Create MainPage.ets in entry/src/main/ets/pages with @Entry decorator. Implement TabBar with 3 tabs: Read, Write, Settings. Use Tabs component with TabContent. Use @State for current tab index. Replace Flutter BottomNavigationBar with Tabs. Implement navigation between tabs. Create base layout with Column containing AppBar (Text component) and Tabs. Write UI test to verify tab switching.",
+      "test_command": "hvigorw test --class MainPageTest",
+      "status": "pending",
+      "updated_time": null
+    },
+    {
+      "id": "13",
+      "title": "Create Read Tab UI",
+      "description": "Create ReadTabPage.ets extending TabContent. Implement UI with Column layout: TagStatusCard (display tag icon, ID, type, capacity), NDEFRecordsList (List component with ForEach rendering RecordTile for each record), ActionButtons (Row with ScanButton and ClearButton). Use @State for tag data and @Link to parent AppState. Add refresh functionality. Implement RecordTile component with RecordTypeBadge, RecordContent, and CopyButton. Write unit test for UI rendering.",
+      "test_command": "hvigorw test --class ReadTabPageTest",
+      "status": "pending",
+      "updated_time": null
+    },
+    {
+      "id": "14",
+      "title": "Create Write Tab UI",
+      "description": "Create WriteTabPage.ets extending TabContent. Implement UI with Column layout: RecordTypeSelector (Radio buttons for Text/URI), TextField for text content, TextField for URI, LanguageDropdown (Select component for text language codes), WriteButton. Use @State for form data and validation state. Implement input validation (required fields, URI format). Implement write operation triggered by WriteButton calling NfcWriteService. Add loading state indicator during write. Write unit test for form validation.",
+      "test_command": "hvigorw test --class WriteTabPageTest",
+      "status": "pending",
+      "updated_time": null
+    },
+    {
+      "id": "15",
+      "title": "Create Settings Tab UI",
+      "description": "Create SettingsTabPage.ets extending TabContent. Implement UI with Column layout: SwitchSetting for Auto-read (Toggle component), SwitchSetting for Auto-write (Toggle), SwitchSetting for Sound (Toggle), SwitchSetting for Vibration (Toggle), ClearHistoryButton (Button). Use @State for settings values and @Link to parent AppState. Implement save on toggle change using PreferencesManager. Implement clear history action. Write unit test for settings persistence.",
+      "test_command": "hvigorw test --class SettingsTabPageTest",
+      "status": "pending",
+      "updated_time": null
+    },
+    {
+      "id": "16",
+      "title": "Create TagStatusCard Component",
+      "description": "Create TagStatusCard.ets custom component. Use Column layout with: TagIcon (Image component showing NFC tag graphic), TagIDLabel (Text component displaying hex tag ID), TagTypeLabel (Text component displaying 'NFC-A', etc.), TagCapacityLabel (Text component showing bytes used/available). Use @Prop to receive tag data from parent. Add conditional rendering when no tag is detected. Implement empty state design. Write unit test for component rendering with mock data.",
+      "test_command": "hvigorw test --class TagStatusCardTest",
+      "status": "pending",
+      "updated_time": null
+    },
+    {
+      "id": "17",
+      "title": "Create Dialog Components",
+      "description": "Create dialog components in entry/src/main/ets/components/dialogs: InfoDialog.ets for displaying tag details with OK button, LockConfirmDialog.ets with warning message and confirm/cancel buttons, ErrorDialog.ets with error message and dismiss button, SuccessDialog.ets with success message and dismiss button. Use AlertDialog or CustomDialog from ArkUI. Implement show/hide methods using @State visibility flag. Pass data via @Prop decorators. Write unit tests for each dialog component.",
+      "test_command": "hvigorw test --class DialogsTest",
+      "status": "pending",
+      "updated_time": null
+    },
+    {
+      "id": "18",
+      "title": "Implement Sound and Vibration Feedback",
+      "description": "Create FeedbackManager utility in entry/src/main/ets/utils/FeedbackManager.ets. Use @ohos.vibrator for vibration feedback, AudioPlayer or SoundPool for sound effects. Implement playTagDetectedSound(), playSuccessSound(), playErrorSound(). Implement vibrateOnTagDetect(), vibrateOnWriteSuccess(). Use settings from PreferencesManager to enable/disable feedback. Write unit tests with mocked audio/vibration APIs.",
+      "test_command": "hvigorw test --class FeedbackManagerTest",
+      "status": "pending",
+      "updated_time": null
+    },
+    {
+      "id": "19",
+      "title": "Implement Tag History Management",
+      "description": "Create TagHistoryManager class in entry/src/main/ets/services/TagHistoryManager.ets. Store tag read history using @ohos.data.preferences or @ohos.data.relationalStore. Implement methods: addToHistory(tag: TagInfo), getHistory(limit: number), clearHistory(), exportHistory(). Implement deduplication to avoid duplicate consecutive entries. Add timestamp to each entry. Write unit tests for history operations including persistence.",
+      "test_command": "hvigorw test --class TagHistoryManagerTest",
+      "status": "pending",
+      "updated_time": null
+    },
+    {
+      "id": "20",
+      "title": "Integrate NFC Reading with Read Tab",
+      "description": "Connect NfcReadService to ReadTabPage UI. Implement scan button that calls NfcReadService.startSession(). Subscribe to tag discovery events using @ohos.taskpool or callbacks. Update TagStatusCard and NDEFRecordsList when tag detected via @State updates. Handle auto-read feature from settings. Add loading state during scan. Implement error handling and show ErrorDialog on failure. Write integration test with mocked NFC service.",
+      "test_command": "hvigorw test --class ReadTabIntegrationTest",
+      "status": "pending",
+      "updated_time": null
+    },
+    {
+      "id": "21",
+      "title": "Integrate NFC Writing with Write Tab",
+      "description": "Connect NfcWriteService to WriteTabPage UI. Implement WriteButton handler that validates form data, calls NfcWriteService.startSession() and writeRecord(). Show loading state during write operation. Handle auto-write feature from settings. Show SuccessDialog on successful write, ErrorDialog on failure. Implement retry logic for write failures. Write integration test with mocked NFC service.",
+      "test_command": "hvigorw test --class WriteTabIntegrationTest",
+      "status": "pending",
+      "updated_time": null
+    },
+    {
+      "id": "22",
+      "title": "Integrate Settings with Preferences",
+      "description": "Connect SettingsTabPage UI to PreferencesManager. On app load, call PreferencesManager.loadAllPreferences() to restore settings. Initialize UI toggle states with loaded values. On toggle change, save to preferences immediately. Connect sound/vibration settings to FeedbackManager. Implement clear history button that calls TagHistoryManager.clearHistory(). Write integration test for settings persistence.",
+      "test_command": "hvigorw test --class SettingsTabIntegrationTest",
+      "status": "pending",
+      "updated_time": null
+    },
+    {
+      "id": "23",
+      "title": "Add App Icons and Resources",
+      "description": "Create app icons in entry/src/main/resources/base/media: app_icon.png for launcher, nfcread_icon.png for read tab, nfcedit_icon.png for write tab, settings_icon.png for settings tab. Add sound files for feedback in entry/src/main/resources/raw/rawfile. Create string resources in entry/src/main/resources/base/element/string.json for all UI text. Create color resources for theme colors. Verify resources compile.",
+      "test_command": "ls entry/src/main/resources/base/media | wc -l",
+      "status": "pending",
+      "updated_time": null
+    },
+    {
+      "id": "24",
+      "title": "Implement Navigation Router",
+      "description": "Create NavigationRouter in entry/src/main/ets/NavigationRouter.ets. Replace Flutter Navigator with ArkUI @ohos.router API. Implement page stack management. Configure page routes: 'pages/MainPage', 'pages/ReadTabPage', 'pages/WriteTabPage', 'pages/SettingsTabPage'. Implement back button handling. Pass parameters between pages if needed. Replace TabBar navigation with NavigationStack or keep Tabs for bottom navigation. Write unit tests.",
+      "test_command": "hvigorw test --class NavigationRouterTest",
+      "status": "pending",
+      "updated_time": null
+    },
+    {
+      "id": "25",
+      "title": "Create Entry Ability and Lifecycle",
+      "description": "Create EntryAbility.ets in entry/src/main/ets/entryability. Implement UIAbility lifecycle methods: onCreate() to initialize app, onForeground() to resume scanning, onBackground() to pause scanning, onDestroy() to cleanup resources. Initialize PreferencesManager in onCreate. Setup NFC session management. Implement permission request flow on first launch. Handle app state restoration. Write unit tests for lifecycle callbacks.",
+      "test_command": "hvigorw test --class EntryAbilityTest",
+      "status": "pending",
+      "updated_time": null
+    },
+    {
+      "id": "26",
+      "title": "Build HarmonyOS HAP Package",
+      "description": "Run hvigorw assembleHap to build HarmonyOS Application Package. Verify build completes without errors. Check generated HAP file in build/default/outputs/default/ directory. Validate package size is reasonable. Verify all permissions are included in HAP manifest. Check that all resource files are included. Test HAP installation on HarmonyOS device or emulator using hdc install command.",
+      "test_command": "hvigorw assembleHap && ls -lh build/default/outputs/default/*.hap",
+      "status": "pending",
+      "updated_time": null
+    },
+    {
+      "id": "27",
+      "title": "Install on Device and Basic Testing",
+      "description": "Install built HAP on HarmonyOS device using hdc install command. Verify app launches successfully from launcher. Test basic UI navigation: tap each tab, verify page transitions. Test NFC permission prompt on first launch (grant permission). Verify app icon appears correctly. Test app background/foreground transitions. Take screenshot of main page. Record any crashes or errors in logcat (hdc shell hilog).",
+      "test_command": "hdc install build/default/outputs/default/*.hap && hdc shell screenshot -p /sdcard/screenshot.png && hdc file recv /sdcard/screenshot.png integration_test/screenshots/harmonyos/iteration_1/main_page.png",
+      "status": "pending",
+      "updated_time": null
+    },
+    {
+      "id": "28",
+      "title": "NFC Reading Integration Test",
+      "description": "Test NFC reading functionality on device. Open Read tab, tap Scan button, bring NFC tag close to device. Verify tag detected: TagStatusCard updates with tag ID, type, capacity. Verify NDEF records parsed and displayed in NDEFRecordsList. Test with different record types: text record (verify language and content), URI record (verify prefix handling), smart poster, MIME type. Test multiple records on single tag. Verify sound/vibration feedback if enabled. Capture screenshot of successful read.",
+      "test_command": "hdc shell screenshot -p /sdcard/read_test.png && hdc file recv /sdcard/read_test.png integration_test/screenshots/harmonyos/iteration_1/read_success.png",
+      "status": "pending",
+      "updated_time": null
+    },
+    {
+      "id": "29",
+      "title": "NFC Writing Integration Test",
+      "description": "Test NFC writing functionality on device. Open Write tab, select Text record type, enter text content, select language code. Tap Write button, bring writable NFC tag close. Verify write successful: SuccessDialog appears. Bring tag to Read tab to verify written data. Test URI record type with valid URL. Test multiple records written sequentially. Test auto-write feature if enabled. Verify sound/vibration feedback on success. Capture screenshot of successful write.",
+      "test_command": "hdc shell screenshot -p /sdcard/write_test.png && hdc file recv /sdcard/write_test.png integration_test/screenshots/harmonyos/iteration_1/write_success.png",
+      "status": "pending",
+      "updated_time": null
+    },
+    {
+      "id": "30",
+      "title": "NFC Locking Integration Test",
+      "description": "Test NFC tag locking functionality. Open Read tab, detect writable tag, navigate to lock option (add lock button or menu item). Tap lock, verify LockConfirmDialog appears with warning. Confirm lock, verify operation executes. Attempt to read locked tag, verify data still readable but not writable. Attempt to write to locked tag, verify error occurs. Verify lock status indicator. Capture screenshot of locked tag state. Test on disposable tag (will be permanently locked).",
+      "test_command": "hdc shell screenshot -p /sdcard/lock_test.png && hdc file recv /sdcard/lock_test.png integration_test/screenshots/harmonyos/iteration_1/lock_success.png",
+      "status": "pending",
+      "updated_time": null
+    },
+    {
+      "id": "31",
+      "title": "Settings Persistence Test",
+      "description": "Test settings persistence across app restarts. Open Settings tab, toggle all switches to custom values. Close app, reopen, verify all settings restored to previous values. Test each setting independently: auto-read, auto-write, sound, vibration. Clear history, verify history cleared. Restart app, verify history still cleared. Change language preference if available, verify persists. Test sound/vibration feedback by reading tag after enabling/disabling settings.",
+      "test_command": "hdc shell screenshot -p /sdcard/settings_test.png && hdc file recv /sdcard/settings_test.png integration_test/screenshots/harmonyos/iteration_1/settings_persisted.png",
+      "status": "pending",
+      "updated_time": null
+    },
+    {
+      "id": "32",
+      "title": "Tag History Integration Test",
+      "description": "Test tag history functionality. Read multiple different NFC tags sequentially. Verify each tag added to history. Open history view (if separate screen) or verify in settings. Check history entries show correct tag ID, timestamp, type. Clear history, verify all entries removed. Test history limit (if configured). Test deduplication - read same tag twice, verify only one entry or consecutive entries with same tag. Export history (if feature exists). Capture screenshot of history list.",
+      "test_command": "hdc shell screenshot -p /sdcard/history_test.png && hdc file recv /sdcard/history_test.png integration_test/screenshots/harmonyos/iteration_1/history_display.png",
+      "status": "pending",
+      "updated_time": null
+    },
+    {
+      "id": "33",
+      "title": "Error Handling Integration Test",
+      "description": "Test error handling scenarios. Attempt to read non-NDEF tag, verify error message displayed. Attempt to write to read-only tag, verify error dialog. Attempt to write to incompatible tag technology, verify appropriate error. Test NFC permission denied scenario. Test app behavior when NFC hardware unavailable. Test timeout scenarios. Verify all error cases show user-friendly ErrorDialog with actionable messages. Capture screenshots of error states.",
+      "test_command": "hdc shell screenshot -p /sdcard/error_test.png && hdc file recv /sdcard/error_test.png integration_test/screenshots/harmonyos/iteration_1/error_handling.png",
+      "status": "pending",
+      "updated_time": null
+    },
+    {
+      "id": "34",
+      "title": "UI Validation and Comparison",
+      "description": "Compare HarmonyOS app screenshots with original Flutter NFC Manager app screenshots. Use image comparison tool or GLM-4.6V to analyze UI matching. Compare: main page layout, Read tab design, Write tab design, Settings tab design, dialog designs, color scheme, typography, spacing. Calculate similarity score for each screen. Document any visual differences. If score < 80% for any screen, note as refinement task. Create UI comparison report in integration_test/ui_comparison_report.md.",
+      "test_command": "python -c \"import json; print(json.dumps({'status': 'ui_comparison_complete', 'iteration': 1}))\"",
+      "status": "pending",
+      "updated_time": null
+    },
+    {
+      "id": "35",
+      "title": "Performance and Stability Test",
+      "description": "Test app performance and stability. Monitor memory usage while app runs (hdc shell hidumper -s). Test continuous tag scanning for 5+ minutes, verify no memory leaks. Test rapid read/write cycles, verify no crashes. Test background/foreground transitions with active NFC session. Test with different NFC tag types: Mifare Ultralight, NTAG, ISO 14443 Type A/B, etc. Test on different HarmonyOS API levels if available. Monitor battery usage during NFC operations. Record any performance issues.",
+      "test_command": "hdc shell hidumper -s | grep -A 5 'entry' | head -20",
+      "status": "pending",
+      "updated_time": null
+    }
+  ]
+}

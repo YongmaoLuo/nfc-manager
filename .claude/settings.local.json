@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(flutter --version)",
+      "Bash(flutter devices:*)",
+      "Bash(flutter create:*)",
+      "Bash(flutter pub:*)",
+      "Bash(flutter build:*)",
+      "WebSearch",
+      "Bash(find /Users/yongmaoluo/Documents/AI_Workspace/Harmony_SDK/nfc-manager/build -name *.hap)",
+      "Bash(git checkout:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)"
+    ]
+  }
+}

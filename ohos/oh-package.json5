@@ -1,0 +1,10 @@
+{
+  "modelVersion": "5.1.0",
+  "name": "app",
+  "version": "1.0.0",
+  "description": "NFC Manager Application for HarmonyOS",
+  "main": "",
+  "author": "",
+  "license": "",
+  "dependencies": {}
+}

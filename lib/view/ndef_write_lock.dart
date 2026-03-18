@@ -1,8 +1,8 @@
 import 'package:app/view/common/form_row.dart';
 import 'package:app/view/common/nfc_session.dart';
+import 'package:app/nfc_manager_stub.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:nfc_manager/nfc_manager.dart';
 import 'package:provider/provider.dart';
 
 class NdefWriteLockModel with ChangeNotifier {

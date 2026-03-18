@@ -8,7 +8,17 @@ import 'package:app/view/ndef_write.dart';
 import 'package:app/view/ndef_write_lock.dart';
 import 'package:app/view/tag_read.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+
+// Check if running on HarmonyOS
+bool get _isOhos {
+  try {
+    return Platform.operatingSystem == 'ohos';
+  } catch (_) {
+    return false;
+  }
+}
 
 class App extends StatelessWidget {
   static Future<Widget> withDependency() async {
@@ -65,7 +75,7 @@ class _Home extends StatelessWidget {
                 builder: (context) => NdefWriteLockPage.withDependency(),
               )),
             ),
-            if (Platform.isAndroid)
+            if (Platform.isAndroid && !_isOhos)
               FormRow(
                 title: Text('Ndef - Format'),
                 trailing: Icon(Icons.chevron_right),
@@ -106,7 +116,9 @@ ThemeData _themeData(Brightness brightness) {
       900: Color(0xFF255CFD),
     }),
     appBarTheme: AppBarTheme(
-      brightness: Brightness.dark,
+      systemOverlayStyle: brightness == Brightness.dark
+          ? SystemUiOverlayStyle.light
+          : SystemUiOverlayStyle.dark,
     ),
     inputDecorationTheme: InputDecorationTheme(
       isDense: true,
@@ -124,7 +136,7 @@ ThemeData _themeData(Brightness brightness) {
     cardColor: brightness == Brightness.dark
       ? Color.fromARGB(255, 28, 28, 30)
       : null,
-    dialogTheme: DialogTheme(
+    dialogTheme: DialogThemeData(
       backgroundColor: brightness == Brightness.dark
         ? Color.fromARGB(255, 28, 28, 30)
         : null,
